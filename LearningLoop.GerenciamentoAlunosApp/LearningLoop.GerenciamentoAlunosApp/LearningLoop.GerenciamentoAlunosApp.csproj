@@ -18,17 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Arguments\" />
     <Folder Include="Controllers\" />
-    <Folder Include="CrossCutting\Enum\" />
     <Folder Include="CrossCutting\Exceptions\" />
     <Folder Include="CrossCutting\Middlewares\" />
     <Folder Include="CrossCutting\Utils\" />
-    <Folder Include="Models\" />
-    <Folder Include="Repositories\Interfaces\" />
     <Folder Include="Services\" />
-    <Folder Include="Responses\" />
-    <Folder Include="Requests\" />
   </ItemGroup>
 
 </Project>
