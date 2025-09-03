@@ -1,0 +1,6 @@
+@LearningLoop.GerenciamentoAlunosApp_HostAddress = http://localhost:5175
+
+GET {{LearningLoop.GerenciamentoAlunosApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
