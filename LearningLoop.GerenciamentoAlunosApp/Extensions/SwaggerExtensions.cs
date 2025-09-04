@@ -10,9 +10,9 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Feedback API",
+                    Title = "Gerenciamento de Alunos",
                     Version = "v1",
-                    Description = "API para gerenciar feedbacks de usuários"
+                    Description = "Esta API permite o gerenciamento completo de alunos, incluindo cadastro, atualização, exclusão e consultas. Ideal para aplicações escolares ou institucionais."
                 });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
