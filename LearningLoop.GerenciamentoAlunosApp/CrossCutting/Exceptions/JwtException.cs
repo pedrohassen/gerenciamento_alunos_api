@@ -17,7 +17,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions
 
         public static JwtException SecretNaoConfigurada()
         {
-            string[] mensagens = new string[] { "JWT Secret não configurada em appsettings.json" };
+            string[] mensagens = new string[] { "JWT Secret não configurada." };
             return new JwtException(mensagens, statusCode: HttpStatusCode.InternalServerError);
         }
 

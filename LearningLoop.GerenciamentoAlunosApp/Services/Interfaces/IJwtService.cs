@@ -2,7 +2,6 @@
 {
     public interface IJwtService
     {
-        string GerarToken(int id, string nome, string email);
-        UsuarioTokenInfo ObterUsuarioLogado();
+        string GerarToken(int id, string email, string perfil);
     }
 }
