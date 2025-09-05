@@ -19,10 +19,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="CrossCutting\Exceptions\" />
-    <Folder Include="CrossCutting\Middlewares\" />
     <Folder Include="CrossCutting\Utils\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>
