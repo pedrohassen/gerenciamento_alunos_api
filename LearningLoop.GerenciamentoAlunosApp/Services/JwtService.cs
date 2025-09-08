@@ -1,11 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using LearningLoop.GerenciamentoAlunosApp.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LearningLoop.GerenciamentoAlunosApp.Services
 {
-    public class JwtService
+    public class JwtService : IJwtService
     {
         private readonly string _secret;
         private readonly string _issuer;
@@ -20,7 +21,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
             _expiresMinutes = int.Parse(configuration["Jwt:ExpiresInMinutes"] ?? "60");
         }
 
-        public string GenerateToken(int userId, string email, string perfil)
+        public string GerarToken(int userId, string email, string perfil)
         {
             List<Claim> claims = new List<Claim>
             {
