@@ -50,8 +50,21 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
                     {
                         context.HandleResponse();
                         throw JwtException.TokenAusente();
+                    },
+                    OnForbidden = context =>
+                    {
+                        throw JwtException.AcessoNegado();
                     }
                 };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireRole("ADMIN"));
+
+                options.AddPolicy("UserOrAdmin", policy =>
+                    policy.RequireRole("USER", "ADMIN"));
             });
 
             return services;

@@ -8,7 +8,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.DI
         {
             services.AddRepositories();
             services.AddServices();
-            services.AddAutoMapper(config => config.AddMaps(typeof(Program).Assembly));
+            services.AddAutoMapperConfig();
             services.AddJwtAuthentication(configuration);
             services.AddCorsConfiguration();
             services.AddSwaggerConfiguration();
