@@ -22,25 +22,18 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
 
         public static void ValidarForcaSenha(string senha)
         {
-            if (senha.Length < 8 ||
-                !Regex.IsMatch(senha, @"[A-Z]") ||
-                !Regex.IsMatch(senha, @"[a-z]") ||
-                !Regex.IsMatch(senha, @"[0-9]") ||
-                !Regex.IsMatch(senha, @"[\W_]"))
+            if (!Regex.IsMatch(senha, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$"))
             {
                 throw new UsuariosErrosException(SenhaFraca, HttpStatusCode.BadRequest, ErroValidacao);
             }
         }
 
-        public static void ValidarPerfil(string perfil)
+
+        public static void ValidarPerfil(int idPerfil)
         {
-            if (perfil != "USER" && perfil != "ADMIN")
+            if (idPerfil != 1 && idPerfil != 2)
             {
-                throw new UsuariosErrosException(
-                    PerfilInvalido,
-                    HttpStatusCode.BadRequest,
-                    ErroValidacao
-                );
+                throw new UsuariosErrosException(PerfilInvalido, HttpStatusCode.BadRequest, ErroValidacao);
             }
         }
 
@@ -79,9 +72,9 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
                 if (tipo == TipoValidacao.Atualizacao)
                 {
                     ValidarIdUsuario(request.Id);
+                    ValidarPerfil(request.IdPerfil);
                 }
                 ValidarDadosUsuario(request.Nome, NomeObrigatorio);
-                ValidarPerfil(request.Perfil);
             }
         }
     }

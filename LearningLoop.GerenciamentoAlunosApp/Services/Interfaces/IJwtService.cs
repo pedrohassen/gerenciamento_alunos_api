@@ -2,6 +2,6 @@
 {
     public interface IJwtService
     {
-        string GerarToken(int id, string email, string perfil);
+        string GerarToken(int id, string email, string perfilNome);
     }
 }

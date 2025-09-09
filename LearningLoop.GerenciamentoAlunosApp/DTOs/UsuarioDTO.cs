@@ -1,6 +1,4 @@
-﻿using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Enum;
-
-namespace LearningLoop.GerenciamentoAlunosApp.DTOs
+﻿namespace LearningLoop.GerenciamentoAlunosApp.DTOs
 {
     public class UsuarioDTO
     {
@@ -8,9 +6,10 @@ namespace LearningLoop.GerenciamentoAlunosApp.DTOs
         public string Nome { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
-        public string Perfil { get; set; }
+        public int IdPerfil { get; set; }
+        public string NomePerfil { get; set; }
         public bool Status { get; set; }
-        public DateOnly DataCriacao { get; set; }
-        public DateOnly DataAtualizacao { get; set; }
+        public DateTime DataCriacao { get; set; }
+        public DateTime DataAtualizacao { get; set; }
     }
 }

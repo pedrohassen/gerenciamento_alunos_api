@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using LearningLoop.GerenciamentoAlunosApp.Arguments;
+using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Enum;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils;
 using LearningLoop.GerenciamentoAlunosApp.Mapper;
@@ -34,16 +35,13 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
 
         public async Task<UsuarioResponse> CriarUsuarioAsync(UsuarioRequest request)
         {
+            request.IdPerfil = ((int)PerfilEnum.USER);
             ValidacoesUsuario.ValidarRequest(request, TipoValidacao.Registro);
 
             bool emailExistente = await _usuarioRepository.EmailExisteAsync(request.Email);
             if (emailExistente)
             {
-                throw new UsuariosErrosException(
-                    EmailJaCadastrado,
-                    HttpStatusCode.BadRequest,
-                    ErroValidacao
-                );
+                throw new UsuariosErrosException(EmailJaCadastrado, HttpStatusCode.BadRequest, ErroValidacao);
             }
 
             UsuarioArgument argument = _converter.Map<UsuarioArgument>(request);
@@ -51,7 +49,10 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
 
             UsuarioModel model = await _usuarioRepository.CriarUsuarioAsync(argument);
 
-            return _converter.Map<UsuarioResponse>(model);
+            UsuarioResponse response = _converter.Map<UsuarioResponse>(model);
+            response.Senha = null;
+
+            return response;
         }
 
         public async Task<IEnumerable<UsuarioResponse>> ObterTodosUsuariosAsync()
@@ -60,11 +61,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
 
             if (!usuarios.Any())
             {
-                throw new UsuariosErrosException(
-                    NenhumUsuarioEncontrado,
-                    HttpStatusCode.NotFound,
-                    ConsultaVazia
-                );
+                throw new UsuariosErrosException(NenhumUsuarioEncontrado, HttpStatusCode.NotFound, ConsultaVazia);
             }
 
             return usuarios.Select(u => _converter.Map<UsuarioResponse>(u));
@@ -78,33 +75,30 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
 
             if (usuario is null)
             {
-                throw new UsuariosErrosException(
-                    UsuarioNaoEncontrado,
-                    HttpStatusCode.NotFound,
-                    ErroValidacao
-                );
+                throw new UsuariosErrosException(UsuarioNaoEncontrado, HttpStatusCode.NotFound, ErroValidacao);
             }
 
-            return _converter.Map<UsuarioResponse>(usuario);
-        }
+            UsuarioResponse response = _converter.Map<UsuarioResponse>(usuario);
+            response.Senha = null;
 
+            return response;
+        }
 
         public async Task<UsuarioResponse> AtualizarUsuarioAsync(UsuarioRequest request)
         {
             ValidacoesUsuario.ValidarRequest(request, TipoValidacao.Atualizacao);
 
-            UsuarioModel? existe = await _usuarioRepository.ObterUsuarioPorIdAsync(request.Id);
-            if (existe is null)
-            {
-                throw new UsuariosErrosException(UsuarioNaoEncontrado, HttpStatusCode.NotFound, ErroValidacao);
-            }
+            UsuarioModel? usuarioExistente = await _usuarioRepository.ObterUsuarioPorIdAsync(request.Id);
 
             UsuarioArgument argument = _converter.Map<UsuarioArgument>(request);
             argument.Senha = _passwordHasher.EncriptaSenha(request.Senha);
-
+            argument.IdPerfil = Enum.IsDefined(typeof(PerfilEnum), request.IdPerfil) ? request.IdPerfil : usuarioExistente!.IdPerfil;
             UsuarioModel model = await _usuarioRepository.AtualizarUsuarioAsync(argument);
 
-            return _converter.Map<UsuarioResponse>(model);
+            UsuarioResponse response = _converter.Map<UsuarioResponse>(model);
+            response.Senha = null;
+
+            return response;
         }
 
         public async Task<UsuarioResponse> DeletarUsuarioAsync(int id)
@@ -114,11 +108,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
             UsuarioResponse? existe = await ObterUsuarioPorIdAsync(id);
             if (existe is null)
             {
-                throw new UsuariosErrosException(
-                    UsuarioNaoEncontrado,
-                    HttpStatusCode.NotFound,
-                    ErroValidacao
-                );
+                throw new UsuariosErrosException(UsuarioNaoEncontrado, HttpStatusCode.NotFound, ErroValidacao);
             }
 
             UsuarioModel model = await _usuarioRepository.DeletarUsuarioAsync(id);
@@ -133,24 +123,17 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
 
             if (usuario is null)
             {
-                throw new UsuariosErrosException(
-                    CredenciaisInvalidas,
-                    HttpStatusCode.Unauthorized,
-                    ErroValidacao
-                );
+                throw new UsuariosErrosException(CredenciaisInvalidas, HttpStatusCode.Unauthorized, ErroValidacao);
             }
 
             bool senhaValida = _passwordHasher.VerificaSenha(request.Senha, usuario.Senha);
             if (!senhaValida)
             {
-                throw new UsuariosErrosException(
-                    CredenciaisInvalidas,
-                    HttpStatusCode.Unauthorized,
-                    ErroValidacao
-                );
+                throw new UsuariosErrosException(CredenciaisInvalidas, HttpStatusCode.Unauthorized, ErroValidacao);
             }
 
-            return _jwtService.GerarToken(usuario.Id, usuario.Email, usuario.Perfil);
+            string role = usuario.NomePerfil ?? PerfilHelper.GetNomePerfil(usuario.IdPerfil);
+            return _jwtService.GerarToken(usuario.Id, usuario.Email, role);
         }
     }
 }

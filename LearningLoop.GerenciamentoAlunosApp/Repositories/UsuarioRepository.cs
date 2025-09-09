@@ -9,50 +9,6 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
 {
     public class UsuarioRepository : PostgresBaseRepository, IUsuarioRepository
     {
-        private const string QueryCriarUsuario = @"
-                                    INSERT INTO usuarios (nome, email, senha, perfil)
-                                    VALUES (@Nome, @Email, @Senha, @Perfil::perfil_usuario)
-                                    RETURNING id, nome, email, perfil, status, data_criacao, data_atualizacao;";
-
-        private const string QueryEmailExiste = @"
-                                    SELECT 1
-                                    FROM usuarios
-                                    WHERE email = @Email
-                                    LIMIT 1;";
-
-        private const string QueryObterTodosUsuarios = @"
-                                    SELECT id, nome, email, perfil, status, data_criacao, data_atualizacao
-                                    FROM usuarios
-                                    ORDER BY nome;";
-
-        private const string QueryAtualizarUsuario = @"
-                                    UPDATE usuarios
-                                    SET nome = @Nome,
-                                        email = @Email,
-                                        senha = @Senha,
-                                        perfil = @Perfil::perfil_usuario,
-                                        status = @Status,
-                                        data_atualizacao = NOW()
-                                    WHERE id = @Id
-                                    RETURNING id, nome, email, perfil, status, data_criacao, data_atualizacao;";
-
-        private const string QueryObterUsuarioPorId = @"
-                                    SELECT id, nome, email, perfil, status, data_criacao, data_atualizacao
-                                    FROM usuarios
-                                    WHERE id = @Id;";
-
-        private const string QueryDeletarUsuario = @"
-                                    UPDATE usuarios
-                                    SET status = false,
-                                        data_atualizacao = NOW()
-                                    WHERE id = @Id
-                                    RETURNING id, nome, email, perfil, status, data_criacao, data_atualizacao;";
-
-        private const string QueryObterUsuarioPorEmail = @"
-                                    SELECT id, nome, email, senha, perfil, status, data_criacao, data_atualizacao
-                                    FROM usuarios
-                                    WHERE email = @Email AND status = true;";
-
         public UsuarioRepository(
             ILogger<UsuarioRepository> logger,
             IConfiguration configuration)
@@ -62,6 +18,11 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
 
         public async Task<UsuarioModel> CriarUsuarioAsync(UsuarioArgument argument)
         {
+            const string QueryCriarUsuario = @"
+                                INSERT INTO usuarios (nome, email, senha, id_perfil)
+                                VALUES (@Nome, @Email, @Senha, @IdPerfil)
+                                RETURNING id, nome, email, senha, id_perfil, status, data_criacao, data_atualizacao;";
+
             using (IDbConnection connection = CreateConnection())
             {
                 return await connection.QuerySingleAsync<UsuarioModel>(QueryCriarUsuario, argument);
@@ -70,6 +31,12 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
 
         public async Task<bool> EmailExisteAsync(string email)
         {
+            const string QueryEmailExiste = @"
+                                SELECT 1
+                                FROM usuarios
+                                WHERE email = @Email
+                                LIMIT 1;";
+
             using (IDbConnection connection = CreateConnection())
             {
                 return (await connection.QueryFirstOrDefaultAsync<int?>(QueryEmailExiste, new { Email = email })).HasValue;
@@ -78,6 +45,14 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
 
         public async Task<IEnumerable<UsuarioModel>> ObterTodosUsuariosAsync()
         {
+            const string QueryObterTodosUsuarios = @"
+                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil, u.status, u.data_criacao, u.data_atualizacao,
+                                        p.nome AS NomePerfil
+                                FROM usuarios u
+                                JOIN perfis_usuario p ON u.id_perfil = p.id
+                                WHERE u.status = true
+                                ORDER BY u.nome;";
+
             using (IDbConnection connection = CreateConnection())
             {
                 return await connection.QueryAsync<UsuarioModel>(QueryObterTodosUsuarios);
@@ -86,6 +61,17 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
 
         public async Task<UsuarioModel> AtualizarUsuarioAsync(UsuarioArgument argument)
         {
+            const string QueryAtualizarUsuario = @"
+                                UPDATE usuarios
+                                SET nome = @Nome,
+                                    email = @Email,
+                                    senha = @Senha,
+                                    id_perfil = @IdPerfil,
+                                    status = @Status,
+                                    data_atualizacao = NOW()
+                                WHERE id = @Id
+                                RETURNING id, nome, email, senha, id_perfil, status, data_criacao, data_atualizacao;";
+
             using (IDbConnection connection = CreateConnection())
             {
                 return await connection.QuerySingleAsync<UsuarioModel>(QueryAtualizarUsuario, argument);
@@ -94,6 +80,13 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
 
         public async Task<UsuarioModel?> ObterUsuarioPorIdAsync(int id)
         {
+            const string QueryObterUsuarioPorId = @"
+                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil, u.status, u.data_criacao, u.data_atualizacao,
+                                        p.nome AS NomePerfil
+                                FROM usuarios u
+                                JOIN perfis_usuario p ON u.id_perfil = p.id
+                                WHERE u.id = @Id AND u.status = true;";
+
             using (IDbConnection connection = CreateConnection())
             {
                 return await connection.QuerySingleOrDefaultAsync<UsuarioModel>(QueryObterUsuarioPorId, new { Id = id });
@@ -102,6 +95,12 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
 
         public async Task<UsuarioModel> DeletarUsuarioAsync(int id)
         {
+            const string QueryDeletarUsuario = @"
+                                UPDATE usuarios
+                                SET status = false, data_atualizacao = NOW()
+                                WHERE id = @Id
+                                RETURNING id, nome, email, senha, id_perfil, status, data_criacao, data_atualizacao;";
+
             using (IDbConnection connection = CreateConnection())
             {
                 return await connection.QuerySingleAsync<UsuarioModel>(QueryDeletarUsuario, new { Id = id });
@@ -110,6 +109,13 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
 
         public async Task<UsuarioModel?> ObterUsuarioPorEmailAsync(string email)
         {
+            const string QueryObterUsuarioPorEmail = @"
+                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil, u.status, u.data_criacao, u.data_atualizacao,
+                                       p.nome AS NomePerfil
+                                FROM usuarios u
+                                JOIN perfis_usuario p ON u.id_perfil = p.id
+                                WHERE u.email = @Email AND u.status = true;";
+
             using (IDbConnection connection = CreateConnection())
             {
                 return await connection.QuerySingleOrDefaultAsync<UsuarioModel>(QueryObterUsuarioPorEmail, new { Email = email });
