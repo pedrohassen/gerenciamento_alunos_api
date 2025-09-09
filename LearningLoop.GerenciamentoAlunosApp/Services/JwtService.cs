@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using LearningLoop.GerenciamentoAlunosApp.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
+using LearningLoop.GerenciamentoAlunosApp.Services.Interfaces;
 
 namespace LearningLoop.GerenciamentoAlunosApp.Services
 {
