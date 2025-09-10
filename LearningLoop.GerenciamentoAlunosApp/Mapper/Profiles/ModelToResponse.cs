@@ -9,6 +9,8 @@ namespace LearningLoop.GerenciamentoAlunosApp.Mapper.Profiles
         public ModelToResponse()
         {
             CreateMap<UsuarioModel, UsuarioResponse>();
+
+            CreateMap<AlunoModel, AlunoResponse>();
         }
     }
 }

@@ -8,6 +8,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+            services.AddScoped<IAlunoRepository, AlunoRepository>();
             return services;
         }
     }
