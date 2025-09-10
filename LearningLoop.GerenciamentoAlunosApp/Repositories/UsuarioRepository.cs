@@ -20,8 +20,8 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
         {
             const string QueryCriarUsuario = @"
                                 INSERT INTO usuarios (nome, email, senha, id_perfil)
-                                VALUES (@Nome, @Email, @Senha, @IdPerfil)
-                                RETURNING id, nome, email, senha, id_perfil, status, data_criacao, data_atualizacao;";
+                                VALUES (@Nome, @Email, @Senha, @Perfil)
+                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao;";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -46,10 +46,8 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
         public async Task<IEnumerable<UsuarioModel>> ObterTodosUsuariosAsync()
         {
             const string QueryObterTodosUsuarios = @"
-                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil, u.status, u.data_criacao, u.data_atualizacao,
-                                        p.nome AS NomePerfil
+                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil AS Perfil, u.status, u.data_criacao AS DataCriacao, u.data_atualizacao AS DataAtualizacao
                                 FROM usuarios u
-                                JOIN perfis_usuario p ON u.id_perfil = p.id
                                 WHERE u.status = true
                                 ORDER BY u.nome;";
 
@@ -66,11 +64,11 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
                                 SET nome = @Nome,
                                     email = @Email,
                                     senha = @Senha,
-                                    id_perfil = @IdPerfil,
+                                    id_perfil = @Perfil,
                                     status = @Status,
                                     data_atualizacao = NOW()
                                 WHERE id = @Id
-                                RETURNING id, nome, email, senha, id_perfil, status, data_criacao, data_atualizacao;";
+                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao;";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -81,10 +79,8 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
         public async Task<UsuarioModel?> ObterUsuarioPorIdAsync(int id)
         {
             const string QueryObterUsuarioPorId = @"
-                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil, u.status, u.data_criacao, u.data_atualizacao,
-                                        p.nome AS NomePerfil
+                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil AS Perfil, u.status, u.data_criacao AS DataCriacao, u.data_atualizacao AS DataAtualizacao
                                 FROM usuarios u
-                                JOIN perfis_usuario p ON u.id_perfil = p.id
                                 WHERE u.id = @Id AND u.status = true;";
 
             using (IDbConnection connection = CreateConnection())
@@ -99,7 +95,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
                                 UPDATE usuarios
                                 SET status = false, data_atualizacao = NOW()
                                 WHERE id = @Id
-                                RETURNING id, nome, email, senha, id_perfil, status, data_criacao, data_atualizacao;";
+                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao;";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -110,10 +106,8 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
         public async Task<UsuarioModel?> ObterUsuarioPorEmailAsync(string email)
         {
             const string QueryObterUsuarioPorEmail = @"
-                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil, u.status, u.data_criacao, u.data_atualizacao,
-                                       p.nome AS NomePerfil
+                                SELECT u.id, u.nome, u.email, u.senha, u.id_perfil AS Perfil, u.status, u.data_criacao AS DataCriacao, u.data_atualizacao AS DataAtualizacao
                                 FROM usuarios u
-                                JOIN perfis_usuario p ON u.id_perfil = p.id
                                 WHERE u.email = @Email AND u.status = true;";
 
             using (IDbConnection connection = CreateConnection())

@@ -9,6 +9,7 @@ using LearningLoop.GerenciamentoAlunosApp.Repositories.Interfaces;
 using LearningLoop.GerenciamentoAlunosApp.Requests;
 using LearningLoop.GerenciamentoAlunosApp.Responses;
 using LearningLoop.GerenciamentoAlunosApp.Services.Interfaces;
+using Microsoft.OpenApi.Extensions;
 using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants;
 using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants.MensagemErro;
 
@@ -35,7 +36,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
 
         public async Task<UsuarioResponse> CriarUsuarioAsync(UsuarioRequest request)
         {
-            request.IdPerfil = ((int)PerfilEnum.USER);
+            request.Perfil = PerfilEnum.USER;
             ValidacoesUsuario.ValidarRequest(request, TipoValidacao.Registro);
 
             bool emailExistente = await _usuarioRepository.EmailExisteAsync(request.Email);
@@ -88,11 +89,10 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
         {
             ValidacoesUsuario.ValidarRequest(request, TipoValidacao.Atualizacao);
 
-            UsuarioModel? usuarioExistente = await _usuarioRepository.ObterUsuarioPorIdAsync(request.Id);
+            await _usuarioRepository.ObterUsuarioPorIdAsync(request.Id);
 
             UsuarioArgument argument = _converter.Map<UsuarioArgument>(request);
             argument.Senha = _passwordHasher.EncriptaSenha(request.Senha);
-            argument.IdPerfil = Enum.IsDefined(typeof(PerfilEnum), request.IdPerfil) ? request.IdPerfil : usuarioExistente!.IdPerfil;
             UsuarioModel model = await _usuarioRepository.AtualizarUsuarioAsync(argument);
 
             UsuarioResponse response = _converter.Map<UsuarioResponse>(model);
@@ -132,7 +132,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
                 throw new UsuariosErrosException(CredenciaisInvalidas, HttpStatusCode.Unauthorized, ErroValidacao);
             }
 
-            string role = usuario.NomePerfil ?? PerfilHelper.GetNomePerfil(usuario.IdPerfil);
+            string role = usuario.Perfil.GetDisplayName();
             return _jwtService.GerarToken(usuario.Id, usuario.Email, role);
         }
     }

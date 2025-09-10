@@ -30,5 +30,11 @@
             public const string RecursoInexistente = "Recurso Inexistente";
             public const string RequisicaoInvalida = "Requisição Inválida.";
         }
+
+        public static class Policies
+        {
+            public const string AdminOnly = "AdminOnly";
+            public const string UserOrAdmin = "UserOrAdmin";
+        }
     }
 }

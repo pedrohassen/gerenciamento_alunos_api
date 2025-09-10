@@ -6,6 +6,7 @@ using LearningLoop.GerenciamentoAlunosApp.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
+using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants.Policies;
 
 namespace LearningLoop.GerenciamentoAlunosApp.Controllers
 {
@@ -45,7 +46,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = AdminOnly)]
         [HttpGet]
         [SwaggerOperation(
             Summary = "Visualizar todos os usuários do sistema.",
@@ -69,7 +70,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Controllers
             }
         }
 
-        [Authorize(Policy = "UserOrAdmin")]
+        [Authorize(Policy = UserOrAdmin)]
         [HttpPut]
         [SwaggerOperation(
             Summary = "Atualiza os dados de um usuário existente.",
@@ -95,7 +96,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Controllers
             }
         }
 
-        [Authorize(Policy = "UserOrAdmin")]
+        [Authorize(Policy = UserOrAdmin)]
         [HttpGet("{id}")]
         [SwaggerOperation(
             Summary = "Obter um usuário pelo ID.",
@@ -121,7 +122,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Policy = AdminOnly)]
         [HttpDelete("{id}")]
         [SwaggerOperation(
             Summary = "Desativa um usuário existente.",

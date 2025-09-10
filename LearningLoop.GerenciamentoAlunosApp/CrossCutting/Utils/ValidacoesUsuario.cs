@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Text.RegularExpressions;
+using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Enum;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions;
 using LearningLoop.GerenciamentoAlunosApp.Requests;
 using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants;
@@ -22,16 +23,17 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
 
         public static void ValidarForcaSenha(string senha)
         {
-            if (!Regex.IsMatch(senha, @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$"))
+            string pattern = @"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{8,}$";
+            if (!Regex.IsMatch(senha, pattern))
             {
                 throw new UsuariosErrosException(SenhaFraca, HttpStatusCode.BadRequest, ErroValidacao);
             }
         }
 
 
-        public static void ValidarPerfil(int idPerfil)
+        public static void ValidarPerfil(PerfilEnum idPerfil)
         {
-            if (idPerfil != 1 && idPerfil != 2)
+            if (idPerfil != PerfilEnum.USER && idPerfil != PerfilEnum.ADMIN)
             {
                 throw new UsuariosErrosException(PerfilInvalido, HttpStatusCode.BadRequest, ErroValidacao);
             }
@@ -72,7 +74,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
                 if (tipo == TipoValidacao.Atualizacao)
                 {
                     ValidarIdUsuario(request.Id);
-                    ValidarPerfil(request.IdPerfil);
+                    ValidarPerfil(request.Perfil);
                 }
                 ValidarDadosUsuario(request.Nome, NomeObrigatorio);
             }
