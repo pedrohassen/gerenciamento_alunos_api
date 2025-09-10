@@ -15,29 +15,29 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
 {
     public class AlunoService : IAlunoService
     {
-        private readonly IAlunoRepository _repository;
-        private readonly IObjectConverter _converter;
+        private readonly IAlunoRepository _alunoRepository;
+        private readonly IObjectConverter _objectConverter;
 
         public AlunoService(IAlunoRepository repository, IObjectConverter converter)
         {
-            _repository = repository;
-            _converter = converter;
+            _alunoRepository = repository;
+            _objectConverter = converter;
         }
 
         public async Task<AlunoResponse> CriarAlunoAsync(AlunoRequest request)
         {
             ValidacoesAluno.ValidarRequest(request, TipoValidacao.Registro);
 
-            bool emailExistente = await _repository.EmailExisteAsync(request.Email);
+            bool emailExistente = await _alunoRepository.EmailExisteAsync(request.Email);
             if (emailExistente)
             {
                 throw new AlunosErrosException(EmailJaCadastrado, HttpStatusCode.BadRequest, ErroValidacao);
             }
 
-            AlunoArgument argument = _converter.Map<AlunoArgument>(request);
-            AlunoModel model = await _repository.CriarAlunoAsync(argument);
+            AlunoArgument argument = _objectConverter.Map<AlunoArgument>(request);
+            AlunoModel model = await _alunoRepository.CriarAlunoAsync(argument);
 
-            AlunoResponse response = _converter.Map<AlunoResponse>(model);
+            AlunoResponse response = _objectConverter.Map<AlunoResponse>(model);
             return response;
         }
 
@@ -45,28 +45,28 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
         {
             ValidacoesAluno.ValidarRequest(request, TipoValidacao.Atualizacao);
 
-            AlunoModel? alunoExistente = await _repository.ObterAlunoPorIdAsync(request.Id);
+            AlunoModel? alunoExistente = await _alunoRepository.ObterAlunoPorIdAsync(request.Id);
             if (alunoExistente == null)
             {
                 throw new AlunosErrosException(AlunoNaoEncontrado, HttpStatusCode.NotFound, ErroValidacao);
             }
 
-            AlunoArgument argument = _converter.Map<AlunoArgument>(request);
-            AlunoModel model = await _repository.AtualizarAlunoAsync(argument);
+            AlunoArgument argument = _objectConverter.Map<AlunoArgument>(request);
+            AlunoModel model = await _alunoRepository.AtualizarAlunoAsync(argument);
 
-            AlunoResponse response = _converter.Map<AlunoResponse>(model);
+            AlunoResponse response = _objectConverter.Map<AlunoResponse>(model);
             return response;
         }
 
         public async Task<AlunoResponse?> ObterAlunoPorIdAsync(int id)
         {
-            AlunoModel? model = await _repository.ObterAlunoPorIdAsync(id);
+            AlunoModel? model = await _alunoRepository.ObterAlunoPorIdAsync(id);
             if (model == null)
             {
                 return null;
             }
 
-            AlunoResponse response = _converter.Map<AlunoResponse>(model);
+            AlunoResponse response = _objectConverter.Map<AlunoResponse>(model);
             return response;
         }
 
@@ -74,27 +74,27 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
         {
             ValidacoesAluno.ValidarFiltrosEPaginacao(filtros);
 
-            IEnumerable<AlunoModel> alunos = await _repository.ObterAlunosAsync(filtros);
+            IEnumerable<AlunoModel> alunos = await _alunoRepository.ObterAlunosAsync(filtros);
 
             if (!alunos.Any())
             {
                 throw new AlunosErrosException(NenhumAlunoEncontrado, HttpStatusCode.NotFound, ConsultaVazia);
             }
 
-            IEnumerable<AlunoResponse> response = alunos.Select(a => _converter.Map<AlunoResponse>(a));
+            IEnumerable<AlunoResponse> response = alunos.Select(a => _objectConverter.Map<AlunoResponse>(a));
             return response;
         }
 
         public async Task<AlunoResponse> DeletarAlunoAsync(int id)
         {
-            AlunoModel? alunoExistente = await _repository.ObterAlunoPorIdAsync(id);
+            AlunoModel? alunoExistente = await _alunoRepository.ObterAlunoPorIdAsync(id);
             if (alunoExistente == null)
             {
                 throw new AlunosErrosException(AlunoNaoEncontrado, HttpStatusCode.NotFound, ErroValidacao);
             }
 
-            AlunoModel model = await _repository.DeletarAlunoAsync(id);
-            AlunoResponse response = _converter.Map<AlunoResponse>(model);
+            AlunoModel model = await _alunoRepository.DeletarAlunoAsync(id);
+            AlunoResponse response = _objectConverter.Map<AlunoResponse>(model);
             return response;
         }
     }
