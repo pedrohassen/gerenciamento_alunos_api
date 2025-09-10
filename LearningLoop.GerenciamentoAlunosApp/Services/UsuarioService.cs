@@ -3,14 +3,13 @@ using LearningLoop.GerenciamentoAlunosApp.Arguments;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Enum;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils;
+using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants;
 using LearningLoop.GerenciamentoAlunosApp.Mapper;
 using LearningLoop.GerenciamentoAlunosApp.Models;
 using LearningLoop.GerenciamentoAlunosApp.Repositories.Interfaces;
 using LearningLoop.GerenciamentoAlunosApp.Requests;
 using LearningLoop.GerenciamentoAlunosApp.Responses;
 using LearningLoop.GerenciamentoAlunosApp.Services.Interfaces;
-using Microsoft.OpenApi.Extensions;
-using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants;
 using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants.MensagemErro;
 
 namespace LearningLoop.GerenciamentoAlunosApp.Services
@@ -132,8 +131,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
                 throw new UsuariosErrosException(CredenciaisInvalidas, HttpStatusCode.Unauthorized, ErroValidacao);
             }
 
-            string role = usuario.Perfil.GetDisplayName();
-            return _jwtService.GerarToken(usuario.Id, usuario.Email, role);
+            return _jwtService.GerarToken(usuario.Id, usuario.Email, usuario.Perfil);
         }
     }
 }

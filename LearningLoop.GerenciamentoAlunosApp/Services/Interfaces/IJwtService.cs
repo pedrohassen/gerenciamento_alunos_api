@@ -1,7 +1,9 @@
-﻿namespace LearningLoop.GerenciamentoAlunosApp.Services.Interfaces
+﻿using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Enum;
+
+namespace LearningLoop.GerenciamentoAlunosApp.Services.Interfaces
 {
     public interface IJwtService
     {
-        string GerarToken(int id, string email, string perfilNome);
+        string GerarToken(int id, string email, PerfilEnum perfilNome);
     }
 }

@@ -2,8 +2,8 @@
 using System.Text.RegularExpressions;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Enum;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions;
+using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants;
 using LearningLoop.GerenciamentoAlunosApp.Requests;
-using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants;
 using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants.MensagemErro;
 
 namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
