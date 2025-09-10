@@ -32,5 +32,11 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions
             string[] mensagens = new string[] { "Token ausente." };
             return new JwtException(mensagens, statusCode: HttpStatusCode.Unauthorized);
         }
+
+        public static JwtException AcessoNegado()
+        {
+            string[] mensagens = new string[] { "Acesso negado. Você não possui permissão para esta ação." };
+            return new JwtException(mensagens, statusCode: HttpStatusCode.Forbidden);
+        }
     }
 }

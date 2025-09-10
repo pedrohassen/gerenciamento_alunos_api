@@ -1,8 +1,10 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
+using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Enum;
 using LearningLoop.GerenciamentoAlunosApp.Services.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Extensions;
 
 namespace LearningLoop.GerenciamentoAlunosApp.Services
 {
@@ -21,13 +23,13 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
             _expiresMinutes = int.Parse(configuration["Jwt:ExpiresInMinutes"] ?? "60");
         }
 
-        public string GerarToken(int userId, string email, string perfil)
+        public string GerarToken(int userId, string email, PerfilEnum perfilNome)
         {
             List<Claim> claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, email),
-                new Claim(ClaimTypes.Role, perfil)
+                new Claim(ClaimTypes.Role, perfilNome.GetDisplayName())
             };
 
             SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secret));

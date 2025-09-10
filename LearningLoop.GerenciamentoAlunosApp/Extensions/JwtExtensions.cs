@@ -1,10 +1,10 @@
-﻿using System.Net;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text;
+using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Enum;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Extensions;
+using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants.Policies;
 
 namespace LearningLoop.GerenciamentoAlunosApp.Extensions
 {
@@ -50,8 +50,21 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
                     {
                         context.HandleResponse();
                         throw JwtException.TokenAusente();
+                    },
+                    OnForbidden = context =>
+                    {
+                        throw JwtException.AcessoNegado();
                     }
                 };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(AdminOnly, policy =>
+                    policy.RequireRole(PerfilEnum.ADMIN.GetDisplayName()));
+
+                options.AddPolicy(UserOrAdmin, policy =>
+                    policy.RequireRole(PerfilEnum.USER.GetDisplayName(), PerfilEnum.ADMIN.GetDisplayName()));
             });
 
             return services;

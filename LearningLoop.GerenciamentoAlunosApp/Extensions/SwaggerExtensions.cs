@@ -22,7 +22,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Digite 'Bearer ' seguido do token JWT. Exemplo: 'Bearer tokenString'"
+                    Description = "Insira o token JWT aqui."
                 });
 
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
