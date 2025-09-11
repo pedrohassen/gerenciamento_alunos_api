@@ -37,6 +37,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
         {
             request.Perfil = PerfilEnum.USER;
             ValidacoesUsuario.ValidarRequest(request, TipoValidacao.Registro);
+            request.Email = TratarDados.TratarEmail(request.Email);
 
             bool emailExistente = await _usuarioRepository.EmailExisteAsync(request.Email);
             if (emailExistente)
@@ -92,6 +93,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
         public async Task<UsuarioResponse> AtualizarUsuarioAsync(UsuarioRequest request)
         {
             ValidacoesUsuario.ValidarRequest(request, TipoValidacao.Atualizacao);
+            request.Email = TratarDados.TratarEmail(request.Email);
 
             await _usuarioRepository.ObterUsuarioPorIdAsync(request.Id);
 

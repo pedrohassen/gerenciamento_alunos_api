@@ -27,6 +27,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
         public async Task<AlunoResponse> CriarAlunoAsync(AlunoRequest request)
         {
             ValidacoesAluno.ValidarRequest(request, TipoValidacao.Registro);
+            request.Email = TratarDados.TratarEmail(request.Email);
 
             bool emailExistente = await _alunoRepository.EmailExisteAsync(request.Email);
             if (emailExistente)
@@ -44,6 +45,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
         public async Task<AlunoResponse> AtualizarAlunoAsync(AlunoRequest request)
         {
             ValidacoesAluno.ValidarRequest(request, TipoValidacao.Atualizacao);
+            request.Email = TratarDados.TratarEmail(request.Email);
 
             AlunoModel? alunoExistente = await _alunoRepository.ObterAlunoPorIdAsync(request.Id);
             if (alunoExistente == null)
