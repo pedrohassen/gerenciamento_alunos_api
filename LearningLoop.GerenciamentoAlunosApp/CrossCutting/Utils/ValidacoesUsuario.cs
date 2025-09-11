@@ -10,19 +10,15 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
 {
     public static class ValidacoesUsuario
     {
-        public static string ValidarEmail(string email)
+        public static void ValidarEmail(string email)
         {
             ValidarDadosUsuario(email, EmailObrigatorio);
 
-            email = email.Trim().ToLowerInvariant();
-
             string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
-            if (!Regex.IsMatch(email, pattern))
+            if (!Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase))
             {
                 throw new UsuariosErrosException(EmailInvalido, HttpStatusCode.BadRequest, ErroValidacao);
             }
-
-            return email;
         }
 
         public static void ValidarForcaSenha(string senha)
@@ -70,7 +66,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
         public static void ValidarRequest(UsuarioRequest request, TipoValidacao tipo)
         {
             ValidarNullRequest(request, RequestNula);
-            request.Email = ValidarEmail(request.Email);
+            ValidarEmail(request.Email);
             ValidarDadosUsuario(request.Senha, SenhaObrigatoria);
 
             if (tipo == TipoValidacao.Registro || tipo == TipoValidacao.Atualizacao)

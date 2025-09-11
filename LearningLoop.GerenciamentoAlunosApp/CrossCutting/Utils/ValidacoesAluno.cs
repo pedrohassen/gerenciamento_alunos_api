@@ -48,7 +48,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
         public static void ValidarRequest(AlunoRequest request, TipoValidacao tipo)
         {
             ValidarNullRequest(request, RequestNula);
-            request.Email = ValidacoesUsuario.ValidarEmail(request.Email);
+            ValidacoesUsuario.ValidarEmail(request.Email);
             ValidarDadosAluno(request.Nome, NomeObrigatorio);
             ValidarDadosAluno(request.Curso, CursoObrigatorio);
             ValidarDataNascimento(request.DataNascimento);
