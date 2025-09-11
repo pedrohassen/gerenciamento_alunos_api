@@ -70,11 +70,13 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
             return response;
         }
 
-        public async Task<IEnumerable<AlunoResponse>> ObterAlunosAsync(FiltrosRequisicaoAlunoModel filtros)
+        public async Task<IEnumerable<AlunoResponse>> ObterAlunosAsync(FiltrosRequisicaoAlunoRequest filtros)
         {
             ValidacoesAluno.ValidarFiltrosEPaginacao(filtros);
 
-            IEnumerable<AlunoModel> alunos = await _alunoRepository.ObterAlunosAsync(filtros);
+            FiltrosRequisicaoAlunoArgument filtrosArgument = _objectConverter.Map<FiltrosRequisicaoAlunoArgument>(filtros);
+
+            IEnumerable<AlunoModel> alunos = await _alunoRepository.ObterAlunosAsync(filtrosArgument);
 
             if (!alunos.Any())
             {

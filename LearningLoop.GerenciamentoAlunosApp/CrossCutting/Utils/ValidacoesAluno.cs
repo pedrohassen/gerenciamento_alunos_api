@@ -1,8 +1,6 @@
 ﻿using System.Net;
-using LearningLoop.GerenciamentoAlunosApp.Arguments;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants;
-using LearningLoop.GerenciamentoAlunosApp.Models;
 using LearningLoop.GerenciamentoAlunosApp.Requests;
 using static LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants.MensagemErro;
 
@@ -61,7 +59,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
             }
         }
 
-        public static void ValidarFiltrosEPaginacao(FiltrosRequisicaoAlunoModel filtros)
+        public static void ValidarFiltrosEPaginacao(FiltrosRequisicaoAlunoRequest filtros)
         {
             if (filtros.Pular < 0)
             {

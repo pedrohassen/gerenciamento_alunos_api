@@ -1,5 +1,4 @@
 ﻿using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions;
-using LearningLoop.GerenciamentoAlunosApp.Models;
 using LearningLoop.GerenciamentoAlunosApp.Requests;
 using LearningLoop.GerenciamentoAlunosApp.Responses;
 using LearningLoop.GerenciamentoAlunosApp.Services.Interfaces;
@@ -113,7 +112,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ObterAlunosAsync([FromQuery] FiltrosRequisicaoAlunoModel filtros)
+        public async Task<IActionResult> ObterAlunosAsync([FromQuery] FiltrosRequisicaoAlunoRequest filtros)
         {
             try
             {

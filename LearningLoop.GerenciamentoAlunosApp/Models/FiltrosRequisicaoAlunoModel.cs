@@ -1,10 +1,8 @@
-﻿namespace LearningLoop.GerenciamentoAlunosApp.Models
+﻿using LearningLoop.GerenciamentoAlunosApp.DTOs;
+
+namespace LearningLoop.GerenciamentoAlunosApp.Models
 {
-    public class FiltrosRequisicaoAlunoModel
+    public class FiltrosRequisicaoAlunoModel : FiltrosRequisicaoAlunoDTO
     {
-        public string? Nome { get; set; }
-        public string? Curso { get; set; }
-        public int? Pular { get; set; } = 0;
-        public int? Quantidade { get; set; } = 50;
     }
 }

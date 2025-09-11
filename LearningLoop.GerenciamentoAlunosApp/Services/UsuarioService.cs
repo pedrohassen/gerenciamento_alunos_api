@@ -19,7 +19,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IBCryptPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtService;
-        private readonly IObjectConverter _converter;
+        private readonly IObjectConverter _objectConverter;
 
         public UsuarioService(
             IUsuarioRepository usuarioRepository,
@@ -30,7 +30,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
             _usuarioRepository = usuarioRepository;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
-            _converter = converter;
+            _objectConverter = converter;
         }
 
         public async Task<UsuarioResponse> CriarUsuarioAsync(UsuarioRequest request)
@@ -44,12 +44,12 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
                 throw new UsuariosErrosException(EmailJaCadastrado, HttpStatusCode.BadRequest, ErroValidacao);
             }
 
-            UsuarioArgument argument = _converter.Map<UsuarioArgument>(request);
+            UsuarioArgument argument = _objectConverter.Map<UsuarioArgument>(request);
             argument.Senha = _passwordHasher.EncriptaSenha(request.Senha);
 
             UsuarioModel model = await _usuarioRepository.CriarUsuarioAsync(argument);
 
-            UsuarioResponse response = _converter.Map<UsuarioResponse>(model);
+            UsuarioResponse response = _objectConverter.Map<UsuarioResponse>(model);
             response.Senha = null;
 
             return response;
@@ -64,7 +64,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
                 throw new UsuariosErrosException(NenhumUsuarioEncontrado, HttpStatusCode.NotFound, ConsultaVazia);
             }
 
-            return usuarios.Select(u => _converter.Map<UsuarioResponse>(u));
+            return usuarios.Select(u => _objectConverter.Map<UsuarioResponse>(u));
         }
 
         public async Task<UsuarioResponse> ObterUsuarioPorIdAsync(int id)
@@ -78,7 +78,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
                 throw new UsuariosErrosException(UsuarioNaoEncontrado, HttpStatusCode.NotFound, ErroValidacao);
             }
 
-            UsuarioResponse response = _converter.Map<UsuarioResponse>(usuario);
+            UsuarioResponse response = _objectConverter.Map<UsuarioResponse>(usuario);
             response.Senha = null;
 
             return response;
@@ -90,11 +90,11 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
 
             await _usuarioRepository.ObterUsuarioPorIdAsync(request.Id);
 
-            UsuarioArgument argument = _converter.Map<UsuarioArgument>(request);
+            UsuarioArgument argument = _objectConverter.Map<UsuarioArgument>(request);
             argument.Senha = _passwordHasher.EncriptaSenha(request.Senha);
             UsuarioModel model = await _usuarioRepository.AtualizarUsuarioAsync(argument);
 
-            UsuarioResponse response = _converter.Map<UsuarioResponse>(model);
+            UsuarioResponse response = _objectConverter.Map<UsuarioResponse>(model);
             response.Senha = null;
 
             return response;
@@ -111,7 +111,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
             }
 
             UsuarioModel model = await _usuarioRepository.DeletarUsuarioAsync(id);
-            return _converter.Map<UsuarioResponse>(model);
+            return _objectConverter.Map<UsuarioResponse>(model);
         }
 
         public async Task<string> LoginAsync(UsuarioRequest request)
