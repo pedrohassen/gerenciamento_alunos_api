@@ -21,7 +21,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
             const string QueryCriarUsuario = @"
                                 INSERT INTO usuarios (nome, email, senha, id_perfil)
                                 VALUES (@Nome, @Email, @Senha, @Perfil)
-                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao;";
+                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -35,7 +35,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
                                 SELECT 1
                                 FROM usuarios
                                 WHERE email = @Email
-                                LIMIT 1;";
+                                LIMIT 1";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -49,7 +49,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
                                 SELECT u.id, u.nome, u.email, u.senha, u.id_perfil AS Perfil, u.status, u.data_criacao AS DataCriacao, u.data_atualizacao AS DataAtualizacao
                                 FROM usuarios u
                                 WHERE u.status = true
-                                ORDER BY u.nome;";
+                                ORDER BY u.nome";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -68,7 +68,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
                                     status = @Status,
                                     data_atualizacao = NOW()
                                 WHERE id = @Id
-                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao;";
+                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -81,7 +81,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
             const string QueryObterUsuarioPorId = @"
                                 SELECT u.id, u.nome, u.email, u.senha, u.id_perfil AS Perfil, u.status, u.data_criacao AS DataCriacao, u.data_atualizacao AS DataAtualizacao
                                 FROM usuarios u
-                                WHERE u.id = @Id AND u.status = true;";
+                                WHERE u.id = @Id AND u.status = true";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -95,7 +95,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
                                 UPDATE usuarios
                                 SET status = false, data_atualizacao = NOW()
                                 WHERE id = @Id
-                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao;";
+                                RETURNING id, nome, email, senha, id_perfil AS Perfil, status, data_criacao AS DataCriacao, data_atualizacao AS DataAtualizacao";
 
             using (IDbConnection connection = CreateConnection())
             {
@@ -108,7 +108,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.Repositories
             const string QueryObterUsuarioPorEmail = @"
                                 SELECT u.id, u.nome, u.email, u.senha, u.id_perfil AS Perfil, u.status, u.data_criacao AS DataCriacao, u.data_atualizacao AS DataAtualizacao
                                 FROM usuarios u
-                                WHERE u.email = @Email AND u.status = true;";
+                                WHERE u.email = @Email AND u.status = true";
 
             using (IDbConnection connection = CreateConnection())
             {

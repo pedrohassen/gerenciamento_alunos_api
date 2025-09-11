@@ -20,5 +20,14 @@
         public const string AcessoNegado = "Acesso Negado";
         public const string RecursoInexistente = "Recurso Inexistente";
         public const string RequisicaoInvalida = "Requisição Inválida.";
+        public const string AlunoNaoEncontrado = "Aluno não encontrado.";
+        public const string NenhumAlunoEncontrado = "Nenhum aluno encontrado.";
+        public const string CursoObrigatorio = "Curso é obrigatório.";
+        public const string DataNascimentoInvalida = "Data de nascimento inválida.";
+        public const string DataNascimentoFutura = "Data de nascimento não pode ser futura.";
+        public const string PularNaoPodeSerNegativo = "O parâmetro 'pular' não pode ser negativo.";
+        public const string QuantidadeDeveEstarEntre1E100 = "O parâmetro 'quantidade' deve estar entre 1 e 100.";
+        public const string NomeNaoPodeSerMaiorQue150 = "O filtro 'nome' não pode ter mais de 150 caracteres.";
+        public const string CursoNaoPodeSerMaiorQue200 = "O filtro 'curso' não pode ter mais de 200 caracteres.";
     }
 }

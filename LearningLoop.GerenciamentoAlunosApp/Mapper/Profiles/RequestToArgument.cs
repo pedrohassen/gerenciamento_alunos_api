@@ -9,6 +9,10 @@ namespace LearningLoop.GerenciamentoAlunosApp.Mapper.Profiles
         public RequestToArgument()
         {
             CreateMap<UsuarioRequest, UsuarioArgument>();
+
+            CreateMap<AlunoRequest, AlunoArgument>();
+
+            CreateMap<FiltrosRequisicaoAlunoRequest, FiltrosRequisicaoAlunoArgument>();
         }
     }
 }
