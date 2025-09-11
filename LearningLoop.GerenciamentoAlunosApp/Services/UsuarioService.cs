@@ -64,7 +64,12 @@ namespace LearningLoop.GerenciamentoAlunosApp.Services
                 throw new UsuariosErrosException(NenhumUsuarioEncontrado, HttpStatusCode.NotFound, ConsultaVazia);
             }
 
-            return usuarios.Select(u => _objectConverter.Map<UsuarioResponse>(u));
+            return usuarios.Select(u =>
+            {
+                UsuarioResponse response = _objectConverter.Map<UsuarioResponse>(u);
+                response.Senha = null;
+                return response;
+            });
         }
 
         public async Task<UsuarioResponse> ObterUsuarioPorIdAsync(int id)
