@@ -1,8 +1,8 @@
 ﻿namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
 {
-    public static class TratativaEmail
+    public static class TratarDados
     {
-        public static string NormalizarEmail(string email)
+        public static string TratarEmail(string email)
         {
             return email.Trim().ToLowerInvariant();
         }
