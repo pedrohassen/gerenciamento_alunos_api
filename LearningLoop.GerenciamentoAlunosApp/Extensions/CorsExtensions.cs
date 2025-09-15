@@ -10,14 +10,10 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
             {
                 options.AddPolicy("PermitirSwagger", policy =>
                 {
-                    policy.WithOrigins(
-                        "https://localhost:7235",
-                        "http://localhost:5233",
-                        "http://localhost:5173"
-                    )
+                    policy
+                    .AllowAnyOrigin()
                     .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowAnyMethod();
                 });
             });
 
