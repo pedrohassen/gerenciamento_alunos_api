@@ -12,10 +12,12 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
                 {
                     policy.WithOrigins(
                         "https://localhost:7235",
-                        "http://localhost:5233"
+                        "http://localhost:5233",
+                        "http://localhost:5173"
                     )
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
                 });
             });
 
