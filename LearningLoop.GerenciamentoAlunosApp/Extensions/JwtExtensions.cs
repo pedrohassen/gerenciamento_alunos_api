@@ -42,10 +42,14 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
 
                 options.Events = new JwtBearerEvents
                 {
-                    OnAuthenticationFailed = context =>
-                    {
-                        throw JwtException.TokenInvalido();
-                    },
+                    // Não lança aqui: isso roda pra QUALQUER requisição que traga um header
+                    // Authorization, mesmo em endpoints anônimos (login/registrar, health
+                    // check) — um token velho/inválido no navegador do cliente não pode
+                    // quebrar rotas que nem exigem autenticação. Deixa a falha de
+                    // autenticação seguir normalmente; quem decide se isso é um problema é
+                    // a autorização (OnChallenge/OnForbidden abaixo), que só dispara pra
+                    // endpoints que reamente exigem [Authorize].
+                    OnAuthenticationFailed = context => Task.CompletedTask,
                     OnChallenge = context =>
                     {
                         context.HandleResponse();
