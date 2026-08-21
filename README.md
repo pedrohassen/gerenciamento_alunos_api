@@ -2,6 +2,12 @@
 
 Back-end do sistema de gerenciamento de alunos ("LearningLoop"), em ASP.NET Core. Expõe a API consumida pelo front-end em [`gerenciamento_alunos_front`](../gerenciamento_alunos_front).
 
+## 🔗 No ar
+
+API rodando no Render (free tier): **https://gerenciamento-alunos-api.onrender.com** — Swagger não fica exposto em produção (só em `Development`). Consumida pelo front em **[gerenciamento-alunos-front.vercel.app](https://gerenciamento-alunos-front.vercel.app)**.
+
+Free tier "dorme" depois de ~15min sem uso — a primeira requisição depois disso pode levar 30-50s pra responder.
+
 ## Stack
 
 - [.NET 8](https://dotnet.microsoft.com/) / ASP.NET Core Web API
