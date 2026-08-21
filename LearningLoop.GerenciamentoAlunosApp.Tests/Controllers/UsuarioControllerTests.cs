@@ -103,10 +103,17 @@ namespace LearningLoop.GerenciamentoAlunosApp.Tests.Controllers
         [Fact]
         public async Task Registrar_ComDadosValidos_Retorna200SemSenha()
         {
+            string hash = TokenHelper.HashSenha(_factory, "Senha123!");
             _factory.UsuarioRepositoryMock.Setup(r => r.EmailExisteAsync(It.IsAny<string>())).ReturnsAsync(false);
             _factory.UsuarioRepositoryMock
                 .Setup(r => r.CriarUsuarioAsync(It.IsAny<Arguments.UsuarioArgument>()))
-                .ReturnsAsync(UsuarioComSenha("hash-persistido"));
+                .ReturnsAsync(UsuarioComSenha(hash));
+            // /registrar loga o usuário automaticamente logo em seguida (ver
+            // UsuarioController.CriarUsuarioAsync), então o mock precisa responder
+            // também ao ObterUsuarioPorEmailAsync que o LoginAsync interno dispara.
+            _factory.UsuarioRepositoryMock
+                .Setup(r => r.ObterUsuarioPorEmailAsync("ana@teste.com"))
+                .ReturnsAsync(UsuarioComSenha(hash));
 
             HttpResponseMessage response = await _client.PostAsJsonAsync("/api/Usuario/registrar", new
             {
@@ -119,6 +126,8 @@ namespace LearningLoop.GerenciamentoAlunosApp.Tests.Controllers
             JsonDocument body = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             Assert.True(body.RootElement.TryGetProperty("senha", out JsonElement senhaProp));
             Assert.Equal(JsonValueKind.Null, senhaProp.ValueKind);
+            Assert.True(body.RootElement.TryGetProperty("token", out JsonElement tokenProp));
+            Assert.False(string.IsNullOrWhiteSpace(tokenProp.GetString()));
         }
 
         [Fact]

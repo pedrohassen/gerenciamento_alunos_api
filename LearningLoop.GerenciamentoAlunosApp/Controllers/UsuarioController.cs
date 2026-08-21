@@ -34,7 +34,26 @@ namespace LearningLoop.GerenciamentoAlunosApp.Controllers
             try
             {
                 UsuarioResponse response = await _usuarioService.CriarUsuarioAsync(request);
-                return Ok(response);
+
+                // O front assume que /registrar já loga o usuário (redireciona direto pra
+                // /home), igual /login — reaproveita LoginAsync com a mesma requisição:
+                // CriarUsuarioAsync trata request.Email mas não mexe em request.Senha (só
+                // hashea uma cópia mapeada), então a senha em texto puro ainda está aqui
+                // pra validar contra o hash recém-gravado.
+                string token = await _usuarioService.LoginAsync(request);
+
+                return Ok(new
+                {
+                    response.Id,
+                    response.Nome,
+                    response.Email,
+                    response.Senha,
+                    response.Perfil,
+                    response.Status,
+                    response.DataCriacao,
+                    response.DataAtualizacao,
+                    Token = token
+                });
             }
             catch (UsuariosErrosException ex)
             {
