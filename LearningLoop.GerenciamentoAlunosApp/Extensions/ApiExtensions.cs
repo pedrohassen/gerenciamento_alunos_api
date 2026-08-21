@@ -19,6 +19,11 @@ namespace LearningLoop.GerenciamentoAlunosApp.Extensions
         {
             endpoints.MapControllers();
 
+            // Health check do Render: por padrão ele bate em "/" pra saber se pode rotear
+            // tráfego pra essa instância — sem essa rota, o deploy sobe mas o Render nunca
+            // conecta o domínio público a ele (fica retornando 404 "no-server" na borda).
+            endpoints.MapGet("/", () => Results.Ok(new { status = "healthy" }));
+
             return endpoints;
         }
     }
