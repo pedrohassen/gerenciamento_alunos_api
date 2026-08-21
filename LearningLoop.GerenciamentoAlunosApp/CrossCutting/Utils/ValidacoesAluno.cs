@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.RegularExpressions;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Exceptions;
 using LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils.Constants;
 using LearningLoop.GerenciamentoAlunosApp.Requests;
@@ -13,6 +14,20 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
             if (request is null)
             {
                 throw new AlunosErrosException(mensagemErro, HttpStatusCode.BadRequest, RequisicaoInvalida);
+            }
+        }
+
+        // Validação própria (em vez de reaproveitar ValidacoesUsuario.ValidarEmail) porque
+        // essa lança UsuariosErrosException, e o AlunoController só captura AlunosErrosException
+        // especificamente — reaproveitar fazia e-mail inválido virar 500 em vez de 400.
+        private static void ValidarEmail(string email)
+        {
+            ValidarDadosAluno(email, EmailObrigatorio);
+
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+            if (!Regex.IsMatch(email, pattern, RegexOptions.IgnoreCase))
+            {
+                throw new AlunosErrosException(EmailInvalido, HttpStatusCode.BadRequest, ErroValidacao);
             }
         }
 
@@ -48,7 +63,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
         public static void ValidarRequest(AlunoRequest request, TipoValidacao tipo)
         {
             ValidarNullRequest(request, RequestNula);
-            ValidacoesUsuario.ValidarEmail(request.Email);
+            ValidarEmail(request.Email);
             ValidarDadosAluno(request.Nome, NomeObrigatorio);
             ValidarDadosAluno(request.Curso, CursoObrigatorio);
             ValidarDataNascimento(request.DataNascimento);

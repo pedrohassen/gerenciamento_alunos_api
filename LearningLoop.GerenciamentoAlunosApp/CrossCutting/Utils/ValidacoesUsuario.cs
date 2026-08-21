@@ -77,6 +77,7 @@ namespace LearningLoop.GerenciamentoAlunosApp.CrossCutting.Utils
                     ValidarPerfil(request.Perfil);
                 }
                 ValidarDadosUsuario(request.Nome, NomeObrigatorio);
+                ValidarForcaSenha(request.Senha);
             }
         }
     }
