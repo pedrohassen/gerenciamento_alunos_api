@@ -28,18 +28,19 @@ Back-end do sistema de gerenciamento de alunos ("LearningLoop"), em ASP.NET Core
 dotnet restore
 ```
 
-### 2. Configurar o banco de dados
+### 2. Configurar o banco de dados e os segredos
 
-Crie um banco PostgreSQL e ajuste as credenciais em dois lugares (precisam bater):
+`appsettings.json` não guarda mais valores reais de connection string nem o `Jwt:Secret` (não podem ir pro repo). Localmente, use o [User Secrets](https://learn.microsoft.com/aspnet/core/security/app-secrets) do ASP.NET Core — fica fora do repo e entra automaticamente na configuração em ambiente `Development`, sem precisar mudar nada em `Program.cs`:
 
-**`LearningLoop.GerenciamentoAlunosApp/appsettings.json`**
-```json
-"ConnectionStrings": {
-  "PostgresConnection": "Host=localhost;Port=5433;Database=LEARNINGLOOP_ALUNOS;Username=admin;Password=papiro"
-}
+```bash
+cd LearningLoop.GerenciamentoAlunosApp
+dotnet user-secrets init
+dotnet user-secrets set "Jwt:Secret" "<uma-chave-secreta-qualquer>"
+dotnet user-secrets set "ConnectionStrings:PostgresConnection" "Host=localhost;Port=5433;Database=LEARNINGLOOP_ALUNOS;Username=admin;Password=papiro"
 ```
 
-**`liquibase/liquibase.properties`**
+Crie o banco PostgreSQL correspondente e ajuste também `liquibase/liquibase.properties` (as credenciais precisam bater com o que foi configurado acima):
+
 ```
 url=jdbc:postgresql://localhost:5433/LEARNINGLOOP_ALUNOS
 username=admin
@@ -73,6 +74,32 @@ dotnet test
 ```
 
 Cobre testes unitários dos `Services` (regra de negócio, com os `Repositories` mockados) e testes de integração dos `Controllers` via `WebApplicationFactory` (sobe a API real em memória — roteamento, autenticação, autorização, middleware de exceção — trocando só os `Repositories` por mocks via DI, sem precisar de Postgres rodando).
+
+## Deploy
+
+A API tem um `Dockerfile` multi-stage (build com `sdk:8.0`, runtime com `aspnet:8.0`) pronto pra rodar em qualquer serviço que suba containers (pensado pro [Render](https://render.com/), como Web Service via Docker).
+
+Nenhum segredo fica na imagem — em produção eles são passados como variáveis de ambiente (convenção do ASP.NET Core: `__` duplo substitui o `:` de configuração aninhada):
+
+| Variável | Equivale a |
+|---|---|
+| `Jwt__Secret` | `Jwt:Secret` |
+| `ConnectionStrings__PostgresConnection` | `ConnectionStrings:PostgresConnection` |
+| `PORT` | porta que o container deve escutar (o Render injeta automaticamente) |
+
+Build e run local da imagem:
+
+```bash
+docker build -t learningloop-api .
+docker run -p 8080:8080 \
+  -e Jwt__Secret="<chave-secreta>" \
+  -e ConnectionStrings__PostgresConnection="Host=...;Port=...;Database=...;Username=...;Password=..." \
+  learningloop-api
+```
+
+Como o app roda atrás de um proxy que termina TLS na borda (o container recebe tráfego HTTP puro), `UseInfra()` (`Extensions/InfraExtensions.cs`) configura `UseForwardedHeaders` antes do `UseHttpsRedirection()`, lendo os headers `X-Forwarded-For`/`X-Forwarded-Proto` pra API reconhecer o protocolo original em vez de tentar redirecionar pra uma porta HTTPS que não existe dentro do container.
+
+O banco de produção não roda migração automática no boot — aplique as changelogs do Liquibase manualmente contra o Postgres remoto (mesmo comando do passo 3 do setup, apontando `liquibase.properties` pra connection string de produção).
 
 ## Autenticação
 
