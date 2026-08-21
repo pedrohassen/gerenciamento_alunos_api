@@ -12,6 +12,13 @@ namespace LearningLoop.GerenciamentoAlunosApp
 
         public static void Main(string[] args)
         {
+            // Containers compartilhados (ex.: Render free tier) às vezes já esgotaram o
+            // limite de instâncias de inotify da máquina host — o watch automático de
+            // appsettings.json (reloadOnChange, ligado por padrão) tenta criar mais uma e
+            // crasha a app na inicialização com IOException antes de qualquer código nosso
+            // rodar. Precisa vir ANTES de CreateBuilder, que é onde o watcher é criado.
+            Environment.SetEnvironmentVariable("DOTNET_hostBuilder__reloadConfigOnChange", "false");
+
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             ConfigureServices(builder);
