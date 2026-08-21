@@ -113,7 +113,7 @@ No Swagger UI, clique em **Authorize** (canto superior direito) e cole o token (
 O token carrega três claims relevantes (definidas em `Services/JwtService.cs`):
 - `sub` — id do usuário (claim JWT padrão)
 - `email` — e-mail do usuário
-- a claim de perfil (`USER`/`ADMIN`) usa a URI completa `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/role` — é assim que o `ClaimTypes.Role` do .NET serializa quando o token é montado direto via `new JwtSecurityToken(...)`, sem passar pelo mapeamento de nome curto. Isso importa pra qualquer consumidor da API que decodifique o token manualmente (o front, por exemplo, lê exatamente essa chave em `tokenService.ts`).
+- a claim de perfil (`USER`/`ADMIN`) usa a URI completa `http://schemas.microsoft.com/ws/2008/06/identity/claims/role` — é assim que o `ClaimTypes.Role` do .NET serializa quando o token é montado direto via `new JwtSecurityToken(...)`, sem passar pelo mapeamento de nome curto. Isso importa pra qualquer consumidor da API que decodifique o token manualmente (o front, por exemplo, lê exatamente essa chave em `tokenService.ts`).
 
 Existem duas policies de autorização:
 - **`AdminOnly`** — só usuários com perfil `ADMIN`.
