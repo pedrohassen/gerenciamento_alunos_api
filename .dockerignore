@@ -1,0 +1,9 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+LearningLoop.GerenciamentoAlunosApp.Tests/
+liquibase/
+.git/
+.gitignore
+README.md
